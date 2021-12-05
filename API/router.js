@@ -16,7 +16,13 @@ function routes(db) {
     })
 
     router.get('/survey/:id', function (req, res) {
+        try {
+            let data = survey.get({ id: req.params.id })[0] || {};
 
+            res.status(200).send(data)
+        } catch (e) {
+            res.status(500).send(`couldn't get data of id ${req.params.id}: ${e.message}`)
+        }
     })
 
     router.post('/survey', function (req, res) {

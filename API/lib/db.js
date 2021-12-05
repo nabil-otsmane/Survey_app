@@ -62,11 +62,14 @@ Entity.prototype.saveContent = function (data) {
     fs.writeFileSync(this.file_name, JSON.stringify(data));
 }
 
-Entity.prototype.get = function() {
+Entity.prototype.get = function(filter) {
     // probably not safe to use require directly in here
     let data = this.getContent();
 
     // some filtering can occur here
+    for (let i in filter) {
+        data = data.filter(e => e[i] == filter[i]);
+    }
 
     return data;
 }
