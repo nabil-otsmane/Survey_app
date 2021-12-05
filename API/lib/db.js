@@ -81,6 +81,8 @@ Entity.prototype.add = function(entry) {
     data = [ ...data, entry ];
 
     this.saveContent(data);
+
+    return id;
 }
 
 Entity.prototype.remove = function({ id }) {
