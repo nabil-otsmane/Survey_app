@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
+import { MdDelete, MdContentCopy, MdOutlineMoreHoriz } from 'react-icons/md'
 
 function Question({ question }) {
 
-    const [modify, setModify] = useState(false)
+    const [modify, setModify] = useState(true)
     const [quest, setQuest] = useState(question);
 
     return (
         <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-2 border-l-4 border-blue-500">
-            {modify && <div className="handle"></div>}
+            {modify && <div className="handle m-0">
+                <MdOutlineMoreHoriz />   
+            </div>}
             <div className="mx-2">
                 <div className="question_cont">
                     {modify?
@@ -36,9 +39,9 @@ function Question({ question }) {
                     <hr />
 
                     <div className="flex flex-row-reverse space-x-reverse m-4">
-                        <button className="p-2 pl-5 pr-5 bg-blue-500 text-gray-100 text-lg rounded-lg focus:border-4 border-blue-300">test</button>
-                        <button className="rounded-lg mx-4">delete</button>
-                        <button>copy</button>
+                        <button className="p-2 pl-5 pr-5 bg-blue-500 text-gray-100 text-lg rounded-lg focus:border-4 border-blue-300">Done</button>
+                        <button className="rounded-lg mx-4"><MdDelete /></button>
+                        <button><MdContentCopy /></button>
                     </div>
                 </div>
             </div>
