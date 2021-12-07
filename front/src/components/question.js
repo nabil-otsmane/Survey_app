@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { MdDelete, MdContentCopy, MdOutlineMoreHoriz } from 'react-icons/md'
 
-function Question({ question, description, modify }) {
-
-    const [quest, setQuest] = useState(question);
-    const [desc, setDesc] = useState(description);
+function Question({ question, modify, setResult }) {
 
     const [selected, setSelected] = useState(0)
 
@@ -34,10 +31,10 @@ function Question({ question, description, modify }) {
                 <div className="responses_cont my-8">
                     <h4>Options</h4>
                     <div className="yes_cont">
-                        <input type="button" value="Yes" className={"p-2 px-4 text-lg text-left appearance-none focus:outline-none rounded-xl rounded w-1/3 mt-2 " + (selected === 1? "border-green-300 border-2":" focus-within:border-blue-400 border border-gray-700")} onClick={() => setSelected(1)} />
+                        <input type="button" value="Yes" className={"p-2 px-4 text-lg text-left appearance-none focus:outline-none rounded-xl rounded w-1/3 mt-2 " + (selected === 1? "border-green-300 border-2":" focus-within:border-blue-400 border border-gray-700")} onClick={() => {setResult(prev => {prev[question] = true; return prev;});setSelected(1)}} />
                     </div>
                     <div className="no_cont">
-                        <input type="button" value="No" className={"p-2 px-4 text-lg text-left appearance-none focus:outline-none rounded-xl rounded w-1/3 mt-2 " + (selected === 2? "border-green-300 border-2":" focus-within:border-blue-400 border border-gray-700")} onClick={() => setSelected(2)} />
+                        <input type="button" value="No" className={"p-2 px-4 text-lg text-left appearance-none focus:outline-none rounded-xl rounded w-1/3 mt-2 " + (selected === 2? "border-green-300 border-2":" focus-within:border-blue-400 border border-gray-700")} onClick={() => {setResult(prev => {prev[question] = false; return prev;});setSelected(2)}} />
                     </div>
                 </div>
                 {

@@ -1,20 +1,50 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { MdChevronRight, MdExpandMore } from 'react-icons/md'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import Question from './question'
+import { Alert, AlertContext } from '../context';
 
 function Survey({ id, title, questions, description, active, setActive }) {
 
     const len = questions.length - 3;
 
     const [submitting, setSubmitting] = useState(false)
+    const [result, setResult] = useState({})
 
-    function submit() {
+    async function submit(showAlert) {
+
+        for (let i of questions) {
+            if (!(i in result)) {
+                showAlert(Alert.error, "Please answer all questions.");
+                return;
+            }
+        }
+
         setSubmitting(true);
 
-        setTimeout(function () {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(result)
+        };
+        
+        let res = await fetch(`http://127.0.0.1:8000/api/survey/${id}/result`, requestOptions)
+
+        if (!res.ok) { 
+            // show error to the user
+            showAlert(Alert.error, "Couldn't submit answer.")
+
+            console.log("error while submitting response.")
             setSubmitting(false);
-        }, 2000)
+        } else {
+            if (res.status === 200) {
+                showAlert(Alert.success, "submission recorded!")
+
+                setSubmitting(false);
+                setActive(-1);
+            }
+        }
+        
     }
 
     return (
@@ -28,29 +58,33 @@ function Survey({ id, title, questions, description, active, setActive }) {
                 <div className="h-1 w-full mx-auto border-b my-5"></div>
                 
                 {
-                    (active? questions: questions.slice(0, 3)).map((e, i) => <Quest key={i} question={e} active={active} />)
+                    (active? questions: questions.slice(0, 3)).map((e, i) => <Quest key={i} question={e} active={active} setResult={setResult} />)
                 }
                 {
                     len > 0 && !active && <Quest question={`${len} more question` + (len > 1? "s": "")} disabled />
                 }
                 
-                <div className="h-16">
-                    <div 
-                        className="absolute flex flex-row bottom-8 right-10 p-4 px-8 rounded bg-blue-500 text-gray-100 shadow-sm" 
-                        onClick={() => {if (active){submit()} else {setActive(id)}}}
-                        >
-                            {submitting && <div className="p-1 mr-2 animate-spin"><AiOutlineLoading3Quarters /></div>}
-                            {active? "Submit response": "Take survey"}
-                    </div>
-                    <button className={"absolute p-2 px-4 rounded border-none focus-within:border-none " + (active? "text-red-400 bottom-10 right-64": "text-green-400 bottom-10 right-52")} onClick={() => setActive(-1)}>{active? "Dismiss": "View results"}</button>
-                </div>
+                <AlertContext.Consumer>
+                    {({showAlert}) => (
+                        <div className="h-16">
+                            <div 
+                                className="absolute flex flex-row bottom-8 right-10 p-4 px-8 rounded bg-blue-500 text-gray-100 shadow-sm" 
+                                onClick={() => {if (active){submit(showAlert)} else {setActive(id)}}}
+                                >
+                                    {submitting && <div className="p-1 mr-2 animate-spin"><AiOutlineLoading3Quarters /></div>}
+                                    {active? "Submit response": "Take survey"}
+                            </div>
+                            <button className={"absolute p-2 px-4 rounded border-none focus-within:border-none " + (active? "text-red-400 bottom-10 right-64": "text-green-400 bottom-10 right-52")} onClick={() => setActive(-1)}>{active? "Dismiss": "View results"}</button>
+                        </div>
+                    )}
+                </AlertContext.Consumer>
 
             </div>
         </div>
     );
 }
 
-function Quest({ question, disabled, active }) {
+function Quest({ question, disabled, active, setResult }) {
 
     const [selected, setSelected] = useState(false);
 
@@ -64,7 +98,7 @@ function Quest({ question, disabled, active }) {
                 <h3 className={disabled? "text-gray-500 text-sm": ""}>{question}</h3>
             </div>
             <div className={"transition-all " + (selected? "block" : "hidden")}>
-                <Question question={question}  />
+                <Question question={question} setResult={setResult} />
             </div>
         </div>
     )

@@ -1,6 +1,7 @@
 import './App.css';
 import Survey from './components/survey';
-import { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { AlertContext, Alert } from './context'
 
 const surveys = [
   {
@@ -31,6 +32,19 @@ function App() {
 
   const [active, setActive] = useState(-1);
   const [shrink, setShrink] = useState(false);
+  const [alert, setAlert] = useState({
+    alert: Alert.none,
+    msg: "",
+    showAlert: (alert, msg) => {
+        setAlert(a => ({ ...a, alert, msg }))
+
+        setTimeout(() => {
+            setAlert(a => ({ ...a, alert: Alert.none, msg: "" }))
+        }, 2000)
+    }
+  })
+
+  const current_alert = useContext(AlertContext);
 
   // https://stackoverflow.com/questions/57453141/using-react-hooks-to-update-w-scroll
   useEffect(() => {
@@ -76,6 +90,10 @@ function App() {
 
   return (
     <div className="App flex flex-col h-screen my-16">
+      <div class={"color" in alert.alert? `bg-${alert.alert.color}-100 border border-${alert.alert.color}-400 text-${alert.alert.color}-700 px-4 py-3 rounded fixed bottom-10 right-10 z-50`:"hidden"} role="alert">
+        <strong class="font-bold mr-4">{alert.alert.title}!</strong>
+        <span class="block sm:inline">{alert.msg}</span>
+      </div>
       <div className="mainContent w-screen">
         <h1 className={"text-center  text-4xl m-8 " + (shrink? "hidden": "")}>Survey App</h1>
 
@@ -86,16 +104,18 @@ function App() {
         <button className="bg-green-400 rounded-xl p-4 px-16">Create a Survey</button>
       </div>
 
-      <div className="p-4 py-8 lg:mx-20 mx-4">
-        <div className="h-10"></div>
-        <h3 className="text-xl ml-4">Explore</h3>
-        {active !== -1 && data.filter(e => e.id === active).map(e => <Survey id={e.id} title={e.title} description={e.description} questions={e.questions} active={true} setActive={setActive} />)}
-        <div className={"flex mt-4 " + (active === -1? " flex-wrap": " flex-nowrap overflow-x-scroll flex-row")}>
-          {
-            data.filter((e, i) => active !== e.id).map((e, i) => <Survey key={i} id={e.id} title={e.title} description={e.description} questions={e.questions} setActive={setActive} />)
-          }
+      <AlertContext.Provider value={alert}>
+        <div className="p-4 py-8 lg:mx-20 mx-4">
+          <div className="h-10"></div>
+          <h3 className="text-xl ml-4">Explore</h3>
+          {active !== -1 && data.filter(e => e.id === active).map(e => <Survey id={e.id} title={e.title} description={e.description} questions={e.questions} active={true} setActive={setActive} />)}
+          <div className={"flex mt-4 " + (active === -1? " flex-wrap": " flex-nowrap overflow-x-scroll flex-row")}>
+            {
+              data.filter((e, i) => active !== e.id).map((e, i) => <Survey key={i} id={e.id} title={e.title} description={e.description} questions={e.questions} setActive={setActive} />)
+            }
+          </div>
         </div>
-      </div>
+      </AlertContext.Provider>
     </div>
   );
 }
