@@ -89,10 +89,10 @@ function App() {
       <div className="p-4 py-8 lg:mx-20 mx-4">
         <div className="h-10"></div>
         <h3 className="text-xl ml-4">Explore</h3>
-        {active !== -1 && <Survey id={active} title={data[active].title} description={data[active].description} questions={data[active].questions} active={true} setActive={setActive} />}
+        {active !== -1 && data.filter(e => e.id === active).map(e => <Survey id={e.id} title={e.title} description={e.description} questions={e.questions} active={true} setActive={setActive} />)}
         <div className={"flex mt-4 " + (active === -1? " flex-wrap": " flex-nowrap overflow-x-scroll flex-row")}>
           {
-            data.filter((e, i) => active !== i).map((e, i) => <Survey key={i} id={i} title={e.title} description={e.description} questions={e.questions} setActive={setActive} />)
+            data.filter((e, i) => active !== e.id).map((e, i) => <Survey key={i} id={e.id} title={e.title} description={e.description} questions={e.questions} setActive={setActive} />)
           }
         </div>
       </div>
