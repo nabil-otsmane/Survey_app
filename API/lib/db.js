@@ -1,5 +1,6 @@
 const path = require('path');
-const fs = require('fs')
+const fs = require('fs');
+const e = require('express');
 
 /**
  * 
@@ -63,6 +64,7 @@ Entity.prototype.saveContent = function (data) {
 }
 
 Entity.prototype.get = function(filter) {
+    filter = filter || {};
     // probably not safe to use require directly in here
     let data = this.getContent();
 
@@ -86,6 +88,20 @@ Entity.prototype.add = function(entry) {
     this.saveContent(data);
 
     return id;
+}
+
+Entity.prototype.alter = function (entry) {
+    let data = this.getContent();
+
+    let id = data.findIndex(e => e.id === entry.id);
+
+    if (id === -1) {
+        throw "index not found."
+    } else {
+        data[id] = entry;
+    }
+
+    this.saveContent(data);
 }
 
 Entity.prototype.remove = function({ id }) {
