@@ -8,11 +8,11 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-const db = new Database({ path: "../" });
+const db = new Database({ path: "../db" });
 
 app.use('/api', routes(db))
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 app.listen(port, function () {
     console.log("server is running at 127.0.0.1:" + port)
 })
