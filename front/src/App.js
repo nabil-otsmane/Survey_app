@@ -2,6 +2,7 @@ import './App.css';
 import Survey from './components/survey';
 import React, { useContext, useEffect, useState } from 'react';
 import { AlertContext, Alert } from './context'
+import Modal from './components/modal';
 
 const surveys = [
   {
@@ -29,6 +30,7 @@ const surveys = [
 function App() {
 
   const [data, setData] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
   const [active, setActive] = useState(-1);
   const [shrink, setShrink] = useState(false);
@@ -90,7 +92,8 @@ function App() {
 
   return (
     <div className="App flex flex-col h-screen my-16">
-      <div class={"color" in alert.alert? `bg-${alert.alert.color}-100 border border-${alert.alert.color}-400 text-${alert.alert.color}-700 px-4 py-3 rounded fixed bottom-10 right-10 z-50`:"hidden"} role="alert">
+      <Modal open={showModal} setOpen={setShowModal} />
+      <div class={"color" in alert.alert? `bg-${alert.alert.color}-100 border border-${alert.alert.color}-400 text-${alert.alert.color}-700 px-4 py-3 rounded fixed bottom-10 right-10 z-30`:"hidden"} role="alert">
         <strong class="font-bold mr-4">{alert.alert.title}!</strong>
         <span class="block sm:inline">{alert.msg}</span>
       </div>
@@ -99,9 +102,9 @@ function App() {
 
 
       </div>
-      <div className={"sticky top-0 shadow-md flex justify-center bg-white z-50 py-" + (shrink? "16": "40")}>
+      <div className={"sticky top-0 shadow-md flex justify-center bg-white z-30 py-" + (shrink? "16": "40")}>
         <input type="text" placeholder="search for a survey" className="p-4 w-1/3 rounded-full border border-gray-400 mx-4 block p-4 appearance-none focus:outline-none bg-transparent" />
-        <button className="bg-green-400 rounded-xl p-4 px-16">Create a Survey</button>
+        <button className="bg-green-400 rounded-xl p-4 px-16" onClick={() => setShowModal(true)}>Create a Survey</button>
       </div>
 
       <AlertContext.Provider value={alert}>
