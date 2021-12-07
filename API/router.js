@@ -35,8 +35,28 @@ function routes(db) {
         }
     })
 
-    router.post('/survey/:id/results', function (req, res) {
+    router.post('/survey/:id/result', function (req, res) {
+        try {
+            const id = parseInt(req.params.id);
+            let data = survey.get({ id })[0] || {};
 
+            if (!("id" in data)) {
+                res.status(404).send(`item ${id} not found.`);
+            } else {
+
+                if (!("results" in data)) {
+                    data.results = [];
+                }
+
+                data.results.push(req.body);
+
+                survey.alter(data);
+
+                res.status(200).send("results added successfully");
+            }
+        } catch(e) {
+            res.status(500).send(`couldn't get or set data for id ${req.params.id}: ${e.message}`)
+        }
     })
 
     return router;
