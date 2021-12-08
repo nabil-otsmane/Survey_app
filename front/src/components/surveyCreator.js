@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { MdClose, MdArrowDownward, MdArrowUpward } from 'react-icons/md'
+import { MdClose, MdArrowDownward, MdArrowUpward, MdDelete } from 'react-icons/md'
 import { AlertContext, Alert } from '../context'
 
 function Creator({ setOpen }) {
@@ -14,8 +14,6 @@ function Creator({ setOpen }) {
             description,
             questions
         });
-
-        console.log(title)
 
         const requestOptions = {
             method: 'POST',
@@ -34,6 +32,7 @@ function Creator({ setOpen }) {
         } else {
             if (res.status === 200) {
                 showAlert(Alert.success, "submission recorded!")
+                setOpen(false)
                 console.log("success")
                 // setSubmitting(false);
                 // setActive(-1);
@@ -53,21 +52,19 @@ function Creator({ setOpen }) {
                 <div className="mx-4">
                     <p>Questions</p>
                     {questions.map((e, i) => (
-                        <div key={e}>
+                        <div key={i}>
                             <input type="text" placeholder="enter question" value={questions[i]} onChange={e => {setQuestions(questions.map((t, j) => j === i ? e.target.value: t))}} className="my-2 p-2 px-4 text-gray-400 focus:text-gray-900 focus:bg-white rounded" />
                             <div className="controls float-right my-2 p-2 px-4 flex flex-row">
                                 <span className="p-1 cursor-pointer">
                                     <MdArrowUpward />
                                 </span>
                                 <span className="p-1 mx-2  cursor-pointer" onClick={() => setQuestions(prev => {
-                                    console.log(prev)
+                                   
                                     if (i === questions.length - 1) {
                                         return prev;
                                     } else {
                                         // swapping two entries of an array without a temp variable 
                                         prev[i] = prev.splice(i + 1, 1, prev[i])[0];
-
-                                        console.log(prev)
                                         return prev;
                                     }
                                 })}>
@@ -89,13 +86,13 @@ function Creator({ setOpen }) {
             <AlertContext.Consumer>
                 {({showAlert}) => (
                     <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                        <button type="button" className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
                                 onClick={() => {submit(showAlert)}}>
-                        Deactivate
+                            Create
                         </button>
-                        <button type="button" className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                        <button type="button" className="mt-3 w-full inline-flex justify-center rounded-md border-none focus:border-none focus-within:border-none px-4 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                                 onClick={() => {setOpen(false)}}>
-                        Cancel
+                            <MdDelete size={20} />
                         </button>
                     </div>
                 )}
