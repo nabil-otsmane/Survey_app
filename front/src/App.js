@@ -1,12 +1,14 @@
 import './App.css';
 import Survey from './components/survey';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AlertContext, Alert } from './context'
 import Modal from './components/modal';
 import Creator from './components/surveyCreator';
 
 function App() {
 
+  const currentSurvey = useRef(null);
+    
   /* survey data to show in the explore list */
   const [data, setData] = useState([]);
 
@@ -79,6 +81,10 @@ function App() {
     fetchData();
   }, [showModal])
 
+  useEffect(function () {
+    currentSurvey.current.focus();
+  }, [active])
+
   return (
     <div className="App flex flex-col h-screen my-16">
       <div className={"color" in alert.alert? `bg-${alert.alert.color}-100 border border-${alert.alert.color}-400 text-${alert.alert.color}-700 px-4 py-3 rounded fixed bottom-10 right-10 z-50`:"hidden"} role="alert">
@@ -91,15 +97,17 @@ function App() {
 
       </div>
       <div className={"sticky top-0 shadow-md flex justify-center bg-white z-30 py-" + (shrink? "16": "40")}>
-        <input type="text" placeholder="search for a survey" className="p-4 w-1/3 rounded-full border border-gray-400 mx-4 block p-4 appearance-none focus:outline-none bg-transparent" />
-        <button className="bg-green-400 rounded-xl p-4 px-16" onClick={() => {setCreateView(false);setShowModal(true)}}>Create a Survey</button>
+        <input type="text" placeholder="search for a survey" onKeyDown={() => showAlert(Alert.info, "The search bar isn't working yet... :(")} onFocus={() => showAlert(Alert.info, "The search bar isn't working yet... :(")} className="p-4 w-1/3 rounded-full border border-gray-400 mx-4 block p-4 appearance-none focus:outline-none bg-transparent shadow-md" />
+        <button className="bg-blue-400 rounded-xl p-4 px-16 text-white shadow-lg" onClick={() => {setCreateView(false);setShowModal(true)}}>Create a Survey</button>
       </div>
 
       <AlertContext.Provider value={alert}>
         <div className="p-4 py-8 lg:mx-20 mx-4">
           <div className="h-10"></div>
+          <div ref={currentSurvey}>
+            {active !== -1 && data.filter(e => e.id === active).map(e => <Survey id={e.id} title={e.title} description={e.description} questions={e.questions} active={true} setActive={setActive} />)}
+          </div>
           <h3 className="text-xl ml-4">Explore</h3>
-          {active !== -1 && data.filter(e => e.id === active).map(e => <Survey id={e.id} title={e.title} description={e.description} questions={e.questions} active={true} setActive={setActive} />)}
           <div className={"flex mt-4 " + (active === -1? " flex-wrap": " flex-nowrap overflow-x-scroll flex-row")}>
             {
               data.filter((e) => active !== e.id).map((e, i) => <Survey key={i} id={e.id} title={e.title} description={e.description} questions={e.questions} setActive={setActive} setView={() => {setShowModal(true);setCreateView(true);setViewId(e.id)}} />)

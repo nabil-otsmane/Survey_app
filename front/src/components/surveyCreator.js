@@ -71,7 +71,7 @@ function Creator({ setOpen }) {
                     <p>Questions</p>
                     {questions.map((e, i) => (
                         <div key={i}>
-                            <input type="text" placeholder="enter question" value={questions[i]} onChange={e => {setQuestions(questions.map((t, j) => j === i ? e.target.value: t))}} className="my-2 p-2 px-4 text-gray-400 focus:text-gray-900 focus:bg-white rounded" />
+                            <input type="text" placeholder="enter question" value={questions[i]} onChange={e => {setQuestions(questions.map((t, j) => j === i ? e.target.value: t))}} className="my-2 p-2 px-4 text-gray-400 focus:text-gray-900 focus:bg-white rounded sm:w-2/3 w-1/2" />
                             <div className="controls float-right my-2 p-2 px-4 flex flex-row">
                                 <span className="p-1 cursor-pointer">
                                     <MdArrowUpward />

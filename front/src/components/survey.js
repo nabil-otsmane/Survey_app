@@ -49,12 +49,13 @@ function Survey({ id, title, questions, description, results, active, setActive,
 
     return (
         <div className={"w-5/6 " + (active || view ? "lg:w-full transition-all border-0": "md:w-5/12 min-w-1/2 transition-all rounded border m-4")}>
-            <div className={"w-full min-w-96 " + (active ? "relative p-10 h-full": "relative bg-white p-10 shadow-sm h-full")}>
+            <div className={"w-full min-w-full " + (active ? "relative p-10 h-full": "relative bg-white p-10 shadow-sm h-full")}>
                 <h3 className={active ? "transition-all text-3xl text-gray-800 text-center": "transition-all text-lg font-medium text-gray-800"}>Survey: {title}</h3>
                 <p className="text-sm font-light text-gray-600 my-3">
-                {description}
+                    {description}
                 </p>
 
+                <div className="w-80"></div>
                 <div className="h-1 w-full mx-auto border-b my-5"></div>
 
                 {view &&
@@ -90,7 +91,7 @@ function Survey({ id, title, questions, description, results, active, setActive,
                     {({showAlert}) => (
                         <div className="h-16">
                             <div 
-                                className="absolute flex flex-row bottom-8 right-10 p-4 px-8 rounded bg-blue-500 text-gray-100 shadow-sm" 
+                                className="absolute flex flex-row bottom-8 right-10 p-4 px-8 rounded bg-blue-500 text-gray-100 shadow-md" 
                                 onClick={() => {if (active){submit(showAlert)} else {setActive(id)}}}
                                 >
                                     {submitting && <div className="p-1 mr-2 animate-spin"><AiOutlineLoading3Quarters /></div>}
