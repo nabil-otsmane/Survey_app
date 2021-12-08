@@ -4,7 +4,7 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import Question from './question'
 import { Alert, AlertContext } from '../context';
 
-function Survey({ id, title, questions, description, active, setActive }) {
+function Survey({ id, title, questions, description, results, active, setActive, setView, view }) {
 
     const len = questions.length - 3;
 
@@ -48,23 +48,45 @@ function Survey({ id, title, questions, description, active, setActive }) {
     }
 
     return (
-        <div className={"w-5/6 " + (active ? "lg:w-full transition-all border-0": "md:w-5/12 min-w-1/2 transition-all rounded border m-4")}>
+        <div className={"w-5/6 " + (active || view ? "lg:w-full transition-all border-0": "md:w-5/12 min-w-1/2 transition-all rounded border m-4")}>
             <div className={"w-full min-w-96 " + (active ? "relative p-10 h-full": "relative bg-white p-10 shadow-sm h-full")}>
-                <h3 className={active ? "transition-all text-3xl text-gray-800 text-center": "transition-all text-lg font-medium text-gray-800"}>{title}</h3>
+                <h3 className={active ? "transition-all text-3xl text-gray-800 text-center": "transition-all text-lg font-medium text-gray-800"}>Survey: {title}</h3>
                 <p className="text-sm font-light text-gray-600 my-3">
                 {description}
                 </p>
 
                 <div className="h-1 w-full mx-auto border-b my-5"></div>
+
+                {view &&
+                    (
+                        <div className="my-8">
+                            {results.length === 0?
+                                (<p className="text-center">No response recorded for this survey. :{"("}</p>):
+                                results.map((e, i) => (
+                                    <div className="my-2 rounded shadow-md py-2">
+                                        <p className="mx-4 text-lg">Answer {i+1}</p>
+                                        <hr />
+                                        {Object.keys(e).map(key => (
+                                            <div className="flex justify-between px-5 items-center h-16 hover:bg-gray-100">
+                                                <h3>{key}</h3>
+                                                <span className={"text-center w-12 p-1 px-2 rounded-md border shadow-md" + (e[key]? " border-green-500 bg-green-200 text-green-900": " border-red-500 bg-red-200 text-red-900")}>{e[key]? "yes": "no"}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    )
+                }
                 
                 {
-                    (active? questions: questions.slice(0, 3)).map((e, i) => <Quest key={i} question={e} active={active} setResult={setResult} />)
+                    !view && (active? questions: questions.slice(0, 3)).map((e, i) => <Quest key={i} question={e} active={active} setResult={setResult} />)
                 }
                 {
-                    len > 0 && !active && <Quest question={`${len} more question` + (len > 1? "s": "")} disabled />
+                    !view && len > 0 && !active && <Quest question={`${len} more question` + (len > 1? "s": "")} disabled />
                 }
                 
-                <AlertContext.Consumer>
+                {!view &&<AlertContext.Consumer>
                     {({showAlert}) => (
                         <div className="h-16">
                             <div 
@@ -74,10 +96,10 @@ function Survey({ id, title, questions, description, active, setActive }) {
                                     {submitting && <div className="p-1 mr-2 animate-spin"><AiOutlineLoading3Quarters /></div>}
                                     {active? "Submit response": "Take survey"}
                             </div>
-                            <button className={"absolute p-2 px-4 rounded border-none focus-within:border-none " + (active? "text-red-400 bottom-10 right-64": "text-green-400 bottom-10 right-52")} onClick={() => setActive(-1)}>{active? "Dismiss": "View results"}</button>
+                            <button className={"absolute p-2 px-4 rounded border-none focus-within:border-none " + (active? "text-red-400 bottom-10 right-64": "text-green-400 bottom-10 right-52")} onClick={() => active? setActive(-1): setView()}>{active? "Dismiss": "View results"}</button>
                         </div>
                     )}
-                </AlertContext.Consumer>
+                </AlertContext.Consumer>}
 
             </div>
         </div>

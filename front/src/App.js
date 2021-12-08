@@ -12,8 +12,9 @@ function App() {
 
   const [showModal, setShowModal] = useState(false);
   
-  /* state variable used to tell the modal which view to show (create survey / view results) */
+  /* state variable used to tell the modal which view to show (create survey (false) / view results (true)) */
   const [createView, setCreateView] = useState(false);
+  const [viewId, setViewId] = useState(-1)
 
   /* store the id of the selected survey to show a bigger picture of it when selected */
   const [active, setActive] = useState(-1);
@@ -91,7 +92,7 @@ function App() {
       </div>
       <div className={"sticky top-0 shadow-md flex justify-center bg-white z-30 py-" + (shrink? "16": "40")}>
         <input type="text" placeholder="search for a survey" className="p-4 w-1/3 rounded-full border border-gray-400 mx-4 block p-4 appearance-none focus:outline-none bg-transparent" />
-        <button className="bg-green-400 rounded-xl p-4 px-16" onClick={() => setShowModal(true)}>Create a Survey</button>
+        <button className="bg-green-400 rounded-xl p-4 px-16" onClick={() => {setCreateView(false);setShowModal(true)}}>Create a Survey</button>
       </div>
 
       <AlertContext.Provider value={alert}>
@@ -101,12 +102,13 @@ function App() {
           {active !== -1 && data.filter(e => e.id === active).map(e => <Survey id={e.id} title={e.title} description={e.description} questions={e.questions} active={true} setActive={setActive} />)}
           <div className={"flex mt-4 " + (active === -1? " flex-wrap": " flex-nowrap overflow-x-scroll flex-row")}>
             {
-              data.filter((e, i) => active !== e.id).map((e, i) => <Survey key={i} id={e.id} title={e.title} description={e.description} questions={e.questions} setActive={setActive} />)
+              data.filter((e) => active !== e.id).map((e, i) => <Survey key={i} id={e.id} title={e.title} description={e.description} questions={e.questions} setActive={setActive} setView={() => {setShowModal(true);setCreateView(true);setViewId(e.id)}} />)
             }
           </div>
         </div>
         <Modal open={showModal} setOpen={setShowModal}>
-          <Creator setOpen={setShowModal} />
+          {showModal && !createView && <Creator setOpen={setShowModal} />}
+          {showModal && createView && <Survey id={viewId} title={data[viewId].title} description={data[viewId].description} questions={data[viewId].questions} results={data[viewId].results || []} view />}
         </Modal>
       </AlertContext.Provider>
     </div>
