@@ -96,13 +96,13 @@ function App() {
 
 
       </div>
-      <div className={"sticky top-0 shadow-md flex justify-center bg-white z-30 py-" + (shrink? "16": "40")}>
+      <div className={"sticky top-0 shadow-md flex justify-center bg-white z-30 mx-8 py-" + (shrink? "16": "40")}>
         <input type="text" placeholder="search for a survey" onKeyDown={() => showAlert(Alert.info, "The search bar isn't working yet... :(")} onFocus={() => showAlert(Alert.info, "The search bar isn't working yet... :(")} className="p-4 w-1/3 rounded-full border border-gray-400 mx-4 block p-4 appearance-none focus:outline-none bg-transparent shadow-md" />
         <button className="bg-blue-400 rounded-xl p-4 px-16 text-white shadow-lg" onClick={() => {setCreateView(false);setShowModal(true)}}>Create a Survey</button>
       </div>
 
       <AlertContext.Provider value={alert}>
-        <div className="p-4 py-8 lg:mx-20 mx-4">
+        <div className="sm:p-4 py-8 lg:mx-20 sm:mx-4 ml-1">
           <div className="h-10"></div>
           <div ref={currentSurvey}>
             {active !== -1 && data.filter(e => e.id === active).map(e => <Survey id={e.id} title={e.title} description={e.description} questions={e.questions} active={true} setActive={setActive} />)}

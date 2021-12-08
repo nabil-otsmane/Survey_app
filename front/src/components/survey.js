@@ -48,7 +48,7 @@ function Survey({ id, title, questions, description, results, active, setActive,
     }
 
     return (
-        <div className={"w-5/6 " + (active || view ? "lg:w-full transition-all border-0": "md:w-5/12 min-w-1/2 transition-all rounded border m-4")}>
+        <div className={"w-11/12 " + (active || view ? "lg:w-full transition-all border-0": "lg:w-5/12 sm:w-full min-w-1/2 transition-all rounded border m-4")}>
             <div className={"w-full min-w-full " + (active ? "relative p-10 h-full": "relative bg-white p-10 shadow-sm h-full")}>
                 <h3 className={active ? "transition-all text-3xl text-gray-800 text-center": "transition-all text-lg font-medium text-gray-800"}>Survey: {title}</h3>
                 <p className="text-sm font-light text-gray-600 my-3">
