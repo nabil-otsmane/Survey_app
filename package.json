@@ -1,0 +1,13 @@
+{
+  "name": "codelabsacademy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf API/static; cd front; npm run build; mv build/ ../API/static",
+    "start": "cd API; npm run start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
