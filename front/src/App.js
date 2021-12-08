@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AlertContext, Alert } from './context'
 import Modal from './components/modal';
 import Creator from './components/surveyCreator';
+import { base_url } from './base_url';
 
 function App() {
 
@@ -59,7 +60,7 @@ function App() {
       try {
   
         // its a better idea to put the base url in a separate file. or maybe .env file ?
-        let res = await fetch("http://127.0.0.1:8000/api/survey");
+        let res = await fetch(base_url + "survey");
         
         if (!res.ok) {
           showAlert(Alert.error, "Coudn't connect to the server.")

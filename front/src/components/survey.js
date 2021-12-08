@@ -3,6 +3,7 @@ import { MdChevronRight, MdExpandMore } from 'react-icons/md'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import Question from './question'
 import { Alert, AlertContext } from '../context';
+import { base_url } from '../base_url';
 
 function Survey({ id, title, questions, description, results, active, setActive, setView, view }) {
 
@@ -28,7 +29,7 @@ function Survey({ id, title, questions, description, results, active, setActive,
             body: JSON.stringify(result)
         };
         
-        let res = await fetch(`http://127.0.0.1:8000/api/survey/${id}/result`, requestOptions)
+        let res = await fetch(`${base_url}survey/${id}/result`, requestOptions)
 
         if (!res.ok) { 
             // show error to the user

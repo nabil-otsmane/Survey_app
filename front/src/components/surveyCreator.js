@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { MdClose, MdArrowDownward, MdArrowUpward, MdDelete } from 'react-icons/md'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { AlertContext, Alert } from '../context'
+import { base_url } from '../base_url'
 
 function Creator({ setOpen }) {
 
@@ -40,7 +41,7 @@ function Creator({ setOpen }) {
 
         setSubmitting(true)
         
-        let res = await fetch(`http://127.0.0.1:8000/api/survey`, requestOptions)
+        let res = await fetch(`${base_url}survey`, requestOptions)
 
         if (!res.ok) { 
             // show error to the user
