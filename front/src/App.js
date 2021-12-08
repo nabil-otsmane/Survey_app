@@ -1,31 +1,9 @@
 import './App.css';
 import Survey from './components/survey';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AlertContext, Alert } from './context'
 import Modal from './components/modal';
-
-const surveys = [
-  {
-    description: "The accordion is a graphical control element comprising a vertically stacked list of items such as labels or thumbnails",
-    title: "Several Windows stacked on each other",
-    questions: ["What is term?", "When to use Accordion Components?", "How can it be defined?", "Chamber reached do he nothing be?"]
-  },
-  {
-    description: "some description is another description",
-    title: "hello there",
-    questions: ["first question", "second question"]
-  },
-  {
-    description: "some description is another description",
-    title: "hello there",
-    questions: ["first question", "second question"]
-  },
-  {
-    description: "some description is another description",
-    title: "hello you",
-    questions: ["first question", "second question"]
-  },
-]
+import Creator from './components/surveyCreator';
 
 function App() {
 
@@ -45,8 +23,6 @@ function App() {
         }, 2000)
     }
   })
-
-  const current_alert = useContext(AlertContext);
 
   // https://stackoverflow.com/questions/57453141/using-react-hooks-to-update-w-scroll
   useEffect(() => {
@@ -71,6 +47,7 @@ function App() {
         
         if (!res.ok) {
           // TODO: send error message to the user
+          alert.showAlert(Alert.error, "Coudn't connect to the server.")
   
           console.log(`An error has occured: ${res.status} - ${res.statusText}`);
         }
@@ -78,24 +55,23 @@ function App() {
         const data = await res.json();
   
         setData(data)
-        console.log(data)
   
       } catch(err) {
         // TODO: send error message to the user
+        alert.showAlert(Alert.error, "unknown error occured.")
   
         console.log(err.message)
       }
     }
 
     fetchData();
-  }, [])
+  }, [alert])
 
   return (
     <div className="App flex flex-col h-screen my-16">
-      <Modal open={showModal} setOpen={setShowModal} />
-      <div class={"color" in alert.alert? `bg-${alert.alert.color}-100 border border-${alert.alert.color}-400 text-${alert.alert.color}-700 px-4 py-3 rounded fixed bottom-10 right-10 z-30`:"hidden"} role="alert">
-        <strong class="font-bold mr-4">{alert.alert.title}!</strong>
-        <span class="block sm:inline">{alert.msg}</span>
+      <div className={"color" in alert.alert? `bg-${alert.alert.color}-100 border border-${alert.alert.color}-400 text-${alert.alert.color}-700 px-4 py-3 rounded fixed bottom-10 right-10 z-30`:"hidden"} role="alert">
+        <strong className="font-bold mr-4">{alert.alert.title}!</strong>
+        <span className="block sm:inline">{alert.msg}</span>
       </div>
       <div className="mainContent w-screen">
         <h1 className={"text-center  text-4xl m-8 " + (shrink? "hidden": "")}>Survey App</h1>
@@ -118,6 +94,9 @@ function App() {
             }
           </div>
         </div>
+        <Modal open={showModal} setOpen={setShowModal}>
+          <Creator open={showModal} setOpen={setShowModal} />
+        </Modal>
       </AlertContext.Provider>
     </div>
   );

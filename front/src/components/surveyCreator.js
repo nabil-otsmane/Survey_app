@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { MdClose, MdArrowDownward, MdArrowUpward, MdDelete } from 'react-icons/md'
 import { AlertContext, Alert } from '../context'
 
