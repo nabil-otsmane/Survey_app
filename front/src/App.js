@@ -7,22 +7,34 @@ import Creator from './components/surveyCreator';
 
 function App() {
 
+  /* survey data to show in the explore list */
   const [data, setData] = useState([]);
-  const [showModal, setShowModal] = useState(false);
 
+  const [showModal, setShowModal] = useState(false);
+  
+  /* state variable used to tell the modal which view to show (create survey / view results) */
+  const [createView, setCreateView] = useState(false);
+
+  /* store the id of the selected survey to show a bigger picture of it when selected */
   const [active, setActive] = useState(-1);
+
+  /* used to know when to shrink the top bar while scrolling */
   const [shrink, setShrink] = useState(false);
+
+  /* state corresponding to the context variable of the alert box */
   const [alert, setAlert] = useState({
     alert: Alert.none,
     msg: "",
-    showAlert: (alert, msg) => {
-        setAlert(a => ({ ...a, alert, msg }))
-
-        setTimeout(() => {
-            setAlert(a => ({ ...a, alert: Alert.none, msg: "" }))
-        }, 2000)
-    }
+    showAlert
   })
+
+  function showAlert(alert, msg) {
+    setAlert(a => ({ ...a, alert, msg }))
+
+    setTimeout(() => {
+        setAlert(a => ({ ...a, alert: Alert.none, msg: "" }))
+    }, 2000)
+}
 
   // https://stackoverflow.com/questions/57453141/using-react-hooks-to-update-w-scroll
   useEffect(() => {
@@ -43,11 +55,11 @@ function App() {
     async function fetchData() {
       try {
   
+        // its a better idea to put the base url in a separate file. or maybe .env file ?
         let res = await fetch("http://127.0.0.1:8000/api/survey");
         
         if (!res.ok) {
-          // TODO: send error message to the user
-          alert.showAlert(Alert.error, "Coudn't connect to the server.")
+          showAlert(Alert.error, "Coudn't connect to the server.")
   
           console.log(`An error has occured: ${res.status} - ${res.statusText}`);
         }
@@ -57,19 +69,18 @@ function App() {
         setData(data)
   
       } catch(err) {
-        // TODO: send error message to the user
-        alert.showAlert(Alert.error, "unknown error occured.")
+        showAlert(Alert.error, "unknown error while retreiving data.")
   
         console.log(err.message)
       }
     }
 
     fetchData();
-  }, [alert])
+  }, [showModal])
 
   return (
     <div className="App flex flex-col h-screen my-16">
-      <div className={"color" in alert.alert? `bg-${alert.alert.color}-100 border border-${alert.alert.color}-400 text-${alert.alert.color}-700 px-4 py-3 rounded fixed bottom-10 right-10 z-30`:"hidden"} role="alert">
+      <div className={"color" in alert.alert? `bg-${alert.alert.color}-100 border border-${alert.alert.color}-400 text-${alert.alert.color}-700 px-4 py-3 rounded fixed bottom-10 right-10 z-50`:"hidden"} role="alert">
         <strong className="font-bold mr-4">{alert.alert.title}!</strong>
         <span className="block sm:inline">{alert.msg}</span>
       </div>
@@ -95,7 +106,7 @@ function App() {
           </div>
         </div>
         <Modal open={showModal} setOpen={setShowModal}>
-          <Creator open={showModal} setOpen={setShowModal} />
+          <Creator setOpen={setShowModal} />
         </Modal>
       </AlertContext.Provider>
     </div>
